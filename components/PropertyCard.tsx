@@ -1,40 +1,48 @@
+
 import React, { useState } from 'react';
 import { Property } from '../types';
 import { BedIcon, BathIcon, GarageIcon, HeartIcon } from './icons/PropertyIcons';
 
 interface PropertyCardProps {
   property: Property;
+  onClick?: () => void;
 }
 
-const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
+const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick }) => {
   const [isFavorited, setIsFavorited] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Don't trigger navigation if clicking navigation buttons or favorite
+    if ((e.target as HTMLElement).closest('button')) return;
+    if (onClick) onClick();
+  };
+
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden group transition-shadow duration-300 shadow-sm hover:shadow">
-      <div className="relative">
-        <img src={property.images[currentImageIndex]} alt={property.name} className="w-full h-56 object-cover" />
+    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden group transition-shadow duration-300 shadow-sm hover:shadow-lg flex flex-col h-full">
+      <div className="relative cursor-pointer" onClick={handleCardClick}>
+        <img src={property.images[currentImageIndex]} alt={property.name} className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105" />
 
         <div className="absolute top-4 left-4 flex items-center gap-2">
-          <span className="bg-white text-gray-900 text-xs font-semibold px-3 py-1.5 rounded-md shadow">{property.status}</span>
+          <span className="bg-white text-gray-900 text-xs font-semibold px-3 py-1.5 rounded-md shadow uppercase tracking-wide">{property.status}</span>
           <span className="bg-white text-gray-900 text-xs font-semibold px-3 py-1.5 rounded-md shadow">{property.daysAgo} Days Ago</span>
         </div>
 
         <button 
-          onClick={() => setIsFavorited(!isFavorited)}
-          className="absolute top-4 right-4 p-2 rounded-full text-white hover:text-red-500 hover:bg-white/20 transition-all" 
+          onClick={(e) => { e.stopPropagation(); setIsFavorited(!isFavorited); }}
+          className="absolute top-4 right-4 p-2 rounded-full text-white bg-black/10 hover:text-red-500 hover:bg-white transition-all backdrop-blur-sm" 
           aria-label="Add to favorites"
         >
           <HeartIcon isFilled={isFavorited} />
         </button>
 
         {property.images.length > 1 && (
-            <div className="absolute bottom-4 left-4 flex items-center gap-1.5">
+            <div className="absolute bottom-4 left-4 flex items-center gap-1.5 z-10">
             {property.images.map((_, index) => (
                 <button 
                     key={index} 
-                    onClick={() => setCurrentImageIndex(index)}
-                    className={`block h-2 w-2 rounded-full transition-colors ${index === currentImageIndex ? 'bg-white' : 'bg-white/50 hover:bg-white/75'}`}
+                    onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(index); }}
+                    className={`block h-1.5 w-1.5 rounded-full transition-all ${index === currentImageIndex ? 'bg-white w-3' : 'bg-white/60 hover:bg-white/90'}`}
                     aria-label={`Go to image ${index + 1}`}
                 />
             ))}
@@ -42,58 +50,59 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
         )}
 
         {property.isPremium && (
-          <span className="absolute bottom-4 right-4 bg-[#ff8d2a] text-white text-sm font-semibold px-4 py-1.5 rounded-md shadow">
+          <span className="absolute bottom-4 right-4 bg-[#F9A826] text-white text-xs font-bold px-3 py-1 rounded shadow uppercase">
             Featured
           </span>
         )}
       </div>
 
-      <div className="p-5">
+      <div className="p-5 flex flex-col flex-grow cursor-pointer" onClick={handleCardClick}>
         <div className="flex justify-between items-center mb-2">
-          <p className="text-sm text-gray-500">{property.propertyType}</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{property.propertyType}</p>
         </div>
 
-        <h3 className="font-bold text-xl text-gray-900 truncate mb-4">{property.name}</h3>
+        <h3 className="font-bold text-lg text-[#0A2B4C] truncate mb-4 group-hover:text-[#F9A826] transition-colors">{property.name}</h3>
         
-        <div className="flex items-start mb-4">
-            <div className="flex flex-col items-start">
-                <span className="text-xs text-gray-500">Bedrooms</span>
-                <div className="flex items-center gap-1 mt-1">
-                    <span className="font-bold text-gray-800 text-base">{property.beds}</span>
-                    <BedIcon />
+        <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-100">
+            <div className="flex flex-col items-center">
+                <div className="flex items-center gap-1.5 text-gray-700">
+                    <BedIcon className="w-4 h-4 text-gray-400" />
+                    <span className="font-bold text-sm">{property.beds}</span>
                 </div>
+                <span className="text-[10px] text-gray-400 mt-0.5">Beds</span>
             </div>
 
-            <span className="text-gray-300 text-2xl font-light mx-4">|</span>
+            <div className="w-px h-8 bg-gray-100"></div>
 
-            <div className="flex flex-col items-start">
-                <span className="text-xs text-gray-500">Bathrooms</span>
-                <div className="flex items-center gap-1 mt-1">
-                    <span className="font-bold text-gray-800 text-base">{property.baths}</span>
-                    <BathIcon />
+            <div className="flex flex-col items-center">
+                <div className="flex items-center gap-1.5 text-gray-700">
+                    <BathIcon className="w-4 h-4 text-gray-400" />
+                    <span className="font-bold text-sm">{property.baths}</span>
                 </div>
+                <span className="text-[10px] text-gray-400 mt-0.5">Baths</span>
             </div>
 
-            <span className="text-gray-300 text-2xl font-light mx-4">|</span>
+            <div className="w-px h-8 bg-gray-100"></div>
 
-            <div className="flex flex-col items-start">
-                <span className="text-xs text-gray-500">Garage</span>
-                <div className="flex items-center gap-1 mt-1">
-                    <span className="font-bold text-gray-800 text-base">{property.garage}</span>
-                    <GarageIcon />
+            <div className="flex flex-col items-center">
+                <div className="flex items-center gap-1.5 text-gray-700">
+                    <GarageIcon className="w-4 h-4 text-gray-400" />
+                    <span className="font-bold text-sm">{property.garage}</span>
                 </div>
+                <span className="text-[10px] text-gray-400 mt-0.5">Garage</span>
             </div>
         </div>
 
-        <hr className="my-4 border-gray-200" />
-
-        <div>
-          <p className="text-2xl font-bold text-gray-900">
+        <div className="mt-auto">
+          <p className="text-xl font-bold text-[#0A2B4C]">
             GH₵{property.priceGHS.toLocaleString('en-US')}
           </p>
-          <p className="text-sm text-gray-500 mt-1">
-            USD {property.priceUSD.toLocaleString('en-US')}
-          </p>
+          <div className="flex justify-between items-center mt-1">
+             <p className="text-xs text-gray-500">
+                USD {property.priceUSD.toLocaleString('en-US')}
+            </p>
+            <span className="text-xs font-medium text-[#F9A826] hover:underline">View Details</span>
+          </div>
         </div>
       </div>
     </div>

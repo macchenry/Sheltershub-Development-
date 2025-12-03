@@ -23,6 +23,13 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, activePage = 'home' }) => {
         }
     };
 
+    const handleAuthClick = (e: React.MouseEvent, type: string) => {
+        e.preventDefault();
+        if (onNavigate) {
+            onNavigate('login');
+        }
+    }
+
   return (
     <header className="bg-white">
       {/* Top Bar */}
@@ -31,8 +38,8 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, activePage = 'home' }) => {
           <span>The Most Trusted Real Estate Marketplace</span>
           <div className="hidden md:flex items-center space-x-6">
             <a href="#" className="hover:text-brand-orange transition-colors">Post a Property</a>
-            <a href="#" className="hover:text-brand-orange transition-colors">Login</a>
-            <a href="#" className="hover:text-brand-orange transition-colors">Signup</a>
+            <a href="#" onClick={(e) => handleAuthClick(e, 'login')} className="hover:text-brand-orange transition-colors">Login</a>
+            <a href="#" onClick={(e) => handleAuthClick(e, 'signup')} className="hover:text-brand-orange transition-colors">Signup</a>
           </div>
         </div>
       </div>
@@ -88,8 +95,8 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, activePage = 'home' }) => {
             </nav>
             <div className="flex flex-col items-center space-y-2 border-t pt-4 pb-4">
                 <a href="#" className="text-gray-700 hover:text-brand-orange">Post a Property</a>
-                <a href="#" className="text-gray-700 hover:text-brand-orange">Login</a>
-                <a href="#" className="text-gray-700 hover:text-brand-orange">Signup</a>
+                <a href="#" onClick={(e) => {handleAuthClick(e, 'login'); setMenuOpen(false)}} className="text-gray-700 hover:text-brand-orange">Login</a>
+                <a href="#" onClick={(e) => {handleAuthClick(e, 'signup'); setMenuOpen(false)}} className="text-gray-700 hover:text-brand-orange">Signup</a>
           </div>
         </div>
       )}

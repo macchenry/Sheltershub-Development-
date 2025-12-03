@@ -57,7 +57,7 @@ const AllProperties: React.FC<{ onNavigate: (page: string) => void }> = ({ onNav
             <div className="flex flex-col lg:flex-row gap-8 items-start">
                 
                 {/* Left Sidebar */}
-                <aside className="w-full lg:w-[280px] flex-shrink-0">
+                <aside className="w-full lg:w-[280px] flex-shrink-0 sticky top-4">
                     <FilterSidebar />
                 </aside>
 
@@ -107,7 +107,11 @@ const AllProperties: React.FC<{ onNavigate: (page: string) => void }> = ({ onNav
                     {/* Listings Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {allPropertiesList.map((property) => (
-                        <PropertyCard key={property.id} property={property} />
+                        <PropertyCard 
+                            key={property.id} 
+                            property={property} 
+                            onClick={() => onNavigate('property-detail')}
+                        />
                         ))}
                     </div>
                     
