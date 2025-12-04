@@ -23,6 +23,7 @@ import SitemapPage from './components/SitemapPage';
 import NotFoundPage from './components/NotFoundPage';
 import ForgotPasswordPage from './components/ForgotPasswordPage';
 import EmailVerificationPage from './components/EmailVerificationPage';
+import ResetPasswordPage from './components/ResetPasswordPage';
 import { featuredProperties, latestProperties, adSliderImages, wideAdSliderImages } from './constants';
 
 const App: React.FC = () => {
@@ -40,6 +41,10 @@ const App: React.FC = () => {
 
     if (currentPage === 'forgot-password') {
         return <ForgotPasswordPage onNavigate={handleNavigate} />;
+    }
+
+    if (currentPage === 'reset-password') {
+        return <ResetPasswordPage onNavigate={handleNavigate} />;
     }
 
     if (currentPage === 'email-verification') {
