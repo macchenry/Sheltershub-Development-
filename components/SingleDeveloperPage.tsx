@@ -232,7 +232,7 @@ const SingleDeveloperPage: React.FC<SingleDeveloperPageProps> = ({ onNavigate })
         </div>
 
       </main>
-      <Footer />
+      <Footer onNavigate={onNavigate} />
     </div>
   );
 };

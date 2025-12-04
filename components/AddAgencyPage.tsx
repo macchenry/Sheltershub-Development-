@@ -197,7 +197,7 @@ const AddAgencyPage: React.FC<AddAgencyPageProps> = ({ onNavigate }) => {
 
       </main>
 
-      <Footer />
+      <Footer onNavigate={onNavigate} />
     </div>
   );
 };

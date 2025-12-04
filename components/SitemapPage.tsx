@@ -40,6 +40,20 @@ const SitemapPage: React.FC<SitemapPageProps> = ({ onNavigate }) => {
         { name: 'Single Developer Detail (Demo)', page: 'developer-detail' },
         { name: 'Register Developer', page: 'add-developer' },
     ]},
+    { title: 'Agent Dashboard', links: [
+        { name: 'My Properties', page: 'agent-properties' },
+        { name: 'Add Property', page: 'agent-add-property' },
+        { name: 'Performance', page: 'agent-performance' },
+        { name: 'Messages', page: 'agent-messages' },
+        { name: 'Profile Settings', page: 'agent-settings' },
+    ]},
+    { title: 'Developer Dashboard', links: [
+        { name: 'My Projects', page: 'developer-dashboard' },
+        { name: 'Add Project', page: 'developer-add-project' },
+        { name: 'Performance', page: 'developer-performance' },
+        { name: 'Messages', page: 'developer-messages' },
+        { name: 'Profile Settings', page: 'developer-settings' },
+    ]},
     { title: 'Admin', links: [
         { name: 'Dashboard', page: 'admin-dashboard' },
         { name: 'Manage Properties', page: 'admin-properties' },

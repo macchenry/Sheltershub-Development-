@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import Header from './Header';
 import Footer from './Footer';
@@ -184,7 +183,7 @@ const AddAgentPage: React.FC<AddAgentPageProps> = ({ onNavigate }) => {
 
       </main>
 
-      <Footer />
+      <Footer onNavigate={onNavigate} />
     </div>
   );
 };

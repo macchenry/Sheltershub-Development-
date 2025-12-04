@@ -288,7 +288,7 @@ const AddPropertyPage: React.FC<AddPropertyPageProps> = ({ onNavigate }) => {
         </form>
       </main>
 
-      <Footer />
+      <Footer onNavigate={onNavigate} />
     </div>
   );
 };

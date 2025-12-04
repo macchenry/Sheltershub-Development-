@@ -201,7 +201,7 @@ const AgenciesPage: React.FC<AgenciesPageProps> = ({ onNavigate }) => {
         )}
 
       </main>
-      <Footer />
+      <Footer onNavigate={onNavigate} />
     </div>
   );
 };

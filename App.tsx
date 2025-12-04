@@ -37,6 +37,20 @@ import AdminSubscriptions from './components/admin/AdminSubscriptions';
 import AdminSettings from './components/admin/AdminSettings';
 import AdminReports from './components/admin/AdminReports';
 
+// Developer Pages
+import DeveloperDashboard from './components/developer/DeveloperDashboard';
+import DeveloperAddProject from './components/developer/DeveloperAddProject';
+import DeveloperPerformance from './components/developer/DeveloperPerformance';
+import DeveloperMessages from './components/developer/DeveloperMessages';
+import DeveloperSettings from './components/developer/DeveloperSettings';
+
+// Agent Pages
+import AgentProperties from './components/agent/AgentProperties';
+import AgentAddProperty from './components/agent/AgentAddProperty';
+import AgentPerformance from './components/agent/AgentPerformance';
+import AgentMessages from './components/agent/AgentMessages';
+import AgentSettings from './components/agent/AgentSettings';
+
 import { featuredProperties, latestProperties, adSliderImages, wideAdSliderImages } from './constants';
 
 const App: React.FC = () => {
@@ -64,6 +78,21 @@ const App: React.FC = () => {
     if (currentPage === 'admin-subscriptions') return <AdminSubscriptions onNavigate={handleNavigate} />;
     if (currentPage === 'admin-settings') return <AdminSettings onNavigate={handleNavigate} />;
     if (currentPage === 'admin-reports') return <AdminReports onNavigate={handleNavigate} />;
+
+    // Developer Dashboard Routes
+    if (currentPage === 'developer-dashboard') return <DeveloperDashboard onNavigate={handleNavigate} />;
+    if (currentPage === 'developer-add-project') return <DeveloperAddProject onNavigate={handleNavigate} />;
+    if (currentPage === 'developer-performance') return <DeveloperPerformance onNavigate={handleNavigate} />;
+    if (currentPage === 'developer-messages') return <DeveloperMessages onNavigate={handleNavigate} />;
+    if (currentPage === 'developer-settings') return <DeveloperSettings onNavigate={handleNavigate} />;
+
+    // Agent Dashboard Routes
+    if (currentPage === 'agent-properties') return <AgentProperties onNavigate={handleNavigate} />;
+    if (currentPage === 'agent-add-property') return <AgentAddProperty onNavigate={handleNavigate} />;
+    if (currentPage === 'agent-performance') return <AgentPerformance onNavigate={handleNavigate} />;
+    if (currentPage === 'agent-messages') return <AgentMessages onNavigate={handleNavigate} />;
+    if (currentPage === 'agent-settings') return <AgentSettings onNavigate={handleNavigate} />;
+
 
     if (currentPage === 'all-properties') {
       return (

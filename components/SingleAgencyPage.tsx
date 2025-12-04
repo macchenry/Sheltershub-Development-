@@ -228,7 +228,7 @@ const SingleAgencyPage: React.FC<SingleAgencyPageProps> = ({ onNavigate }) => {
         </div>
 
       </main>
-      <Footer />
+      <Footer onNavigate={onNavigate} />
     </div>
   );
 };

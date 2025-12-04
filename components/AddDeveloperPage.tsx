@@ -324,7 +324,7 @@ const AddDeveloperPage: React.FC<AddDeveloperPageProps> = ({ onNavigate }) => {
 
       </main>
 
-      <Footer />
+      <Footer onNavigate={onNavigate} />
     </div>
   );
 };
