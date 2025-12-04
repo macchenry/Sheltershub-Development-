@@ -1,5 +1,8 @@
 
 
+
+
+
 import React, { useState } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -17,6 +20,8 @@ import SingleAgencyPage from './components/SingleAgencyPage';
 import AddAgencyPage from './components/AddAgencyPage';
 import AddAgentPage from './components/AddAgentPage';
 import AddDeveloperPage from './components/AddDeveloperPage';
+import DevelopersPage from './components/DevelopersPage';
+import SingleDeveloperPage from './components/SingleDeveloperPage';
 import { featuredProperties, latestProperties, adSliderImages, wideAdSliderImages } from './constants';
 
 const App: React.FC = () => {
@@ -68,6 +73,14 @@ const App: React.FC = () => {
 
     if (currentPage === 'add-developer') {
       return <AddDeveloperPage onNavigate={handleNavigate} />;
+    }
+
+    if (currentPage === 'developers') {
+        return <DevelopersPage onNavigate={handleNavigate} />;
+    }
+
+    if (currentPage === 'developer-detail') {
+        return <SingleDeveloperPage onNavigate={handleNavigate} />;
     }
 
     // Home Page

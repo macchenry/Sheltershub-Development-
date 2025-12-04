@@ -1,5 +1,6 @@
 
 
+
 import React, { useState } from 'react';
 import { navLinks } from '../constants';
 
@@ -21,7 +22,8 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, activePage = 'home' }) => {
             if (linkName === 'Home') onNavigate('home');
             else if (linkName === 'All Properties') onNavigate('all-properties');
             else if (linkName === 'Agencies') onNavigate('agencies');
-            // Agents and Developers main links fall through for now or can be added later
+            else if (linkName === 'Developers') onNavigate('developers');
+            // Agents main links fall through for now or can be added later
         }
     };
 
