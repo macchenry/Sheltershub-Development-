@@ -21,7 +21,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, activePage = 'home' }) => {
             if (linkName === 'Home') onNavigate('home');
             else if (linkName === 'All Properties') onNavigate('all-properties');
             else if (linkName === 'Agencies') onNavigate('agencies');
-            // Other links can remain default for now
+            // Agents and Developers main links fall through for now or can be added later
         }
     };
 
@@ -39,8 +39,35 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, activePage = 'home' }) => {
         }
     };
 
+    const handleAddAgencyClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (onNavigate) {
+            onNavigate('add-agency');
+        }
+    };
+
+    const handleAddAgentClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (onNavigate) {
+            onNavigate('add-agent');
+        }
+    };
+
+    const handleAddDeveloperClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (onNavigate) {
+            onNavigate('add-developer');
+        }
+    };
+
+    const submenuItems: Record<string, { label: string; onClick: (e: React.MouseEvent) => void; activePage: string }> = {
+        'Agencies': { label: 'Add New Agency', onClick: handleAddAgencyClick, activePage: 'add-agency' },
+        'Agents': { label: 'Add New Agent', onClick: handleAddAgentClick, activePage: 'add-agent' },
+        'Developers': { label: 'Add New Developer', onClick: handleAddDeveloperClick, activePage: 'add-developer' },
+    };
+
   return (
-    <header className="bg-white">
+    <header className="bg-white relative z-50">
       {/* Top Bar */}
       <div className="bg-[#082956] text-white text-sm font-light">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
@@ -69,17 +96,48 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, activePage = 'home' }) => {
       {/* Bottom Bar: Main Navigation */}
       <div className="border-t border-b border-gray-200 hidden lg:block">
         <div className="container mx-auto px-4 h-14 flex justify-center items-center">
-             <nav className="hidden lg:flex items-center space-x-8">
-                {navLinks.map((link) => (
-                <a 
-                    key={link.name} 
-                    href={link.href} 
-                    onClick={(e) => handleNavClick(e, link.name)}
-                    className={`${(link.name === 'Home' && activePage === 'home') || (link.name === 'All Properties' && activePage === 'all-properties') || (link.name === 'Agencies' && activePage === 'agencies') ? 'text-brand-orange' : 'text-gray-800'} hover:text-brand-orange font-semibold text-base transition-colors`}
-                >
-                    {link.name}
-                </a>
-                ))}
+             <nav className="hidden lg:flex items-center space-x-8 h-full">
+                {navLinks.map((link) => {
+                    const submenu = submenuItems[link.name];
+
+                    if (submenu) {
+                        return (
+                            <div key={link.name} className="relative group h-full flex items-center">
+                                <a 
+                                    href={link.href} 
+                                    onClick={(e) => handleNavClick(e, link.name)}
+                                    className={`${(activePage === link.name.toLowerCase() || activePage === submenu.activePage) ? 'text-brand-orange' : 'text-gray-800'} hover:text-brand-orange font-semibold text-base transition-colors flex items-center gap-1 h-full`}
+                                >
+                                    {link.name}
+                                    <svg className="w-4 h-4 mt-0.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </a>
+                                {/* Submenu */}
+                                <div className="absolute top-full left-1/2 -translate-x-1/2 w-48 bg-white border border-gray-100 shadow-xl rounded-b-lg overflow-hidden hidden group-hover:block z-50">
+                                    <a 
+                                        href="#" 
+                                        onClick={(e) => {
+                                            submenu.onClick(e);
+                                        }}
+                                        className="block px-4 py-3 text-sm text-gray-700 hover:bg-orange-50 hover:text-brand-orange transition-colors text-center"
+                                    >
+                                        {submenu.label}
+                                    </a>
+                                </div>
+                            </div>
+                        );
+                    }
+
+                    return (
+                        <a 
+                            key={link.name} 
+                            href={link.href} 
+                            onClick={(e) => handleNavClick(e, link.name)}
+                            className={`${(link.name === 'Home' && activePage === 'home') || (link.name === 'All Properties' && activePage === 'all-properties') ? 'text-brand-orange' : 'text-gray-800'} hover:text-brand-orange font-semibold text-base transition-colors h-full flex items-center`}
+                        >
+                            {link.name}
+                        </a>
+                    );
+                })}
             </nav>
         </div>
       </div>
@@ -88,19 +146,35 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, activePage = 'home' }) => {
       {menuOpen && (
         <div className="lg:hidden bg-white border-t">
             <nav className="flex flex-col items-center py-4 space-y-2">
-                {navLinks.map((link) => (
-                <a 
-                    key={link.name} 
-                    href={link.href}
-                    onClick={(e) => {
-                        handleNavClick(e, link.name);
-                        setMenuOpen(false);
-                    }}
-                    className="text-gray-700 hover:text-brand-orange font-medium px-4 py-2 w-full text-center"
-                >
-                    {link.name}
-                </a>
-                ))}
+                {navLinks.map((link) => {
+                    const submenu = submenuItems[link.name];
+                    return (
+                        <React.Fragment key={link.name}>
+                            <a 
+                                href={link.href}
+                                onClick={(e) => {
+                                    handleNavClick(e, link.name);
+                                    setMenuOpen(false);
+                                }}
+                                className="text-gray-700 hover:text-brand-orange font-medium px-4 py-2 w-full text-center"
+                            >
+                                {link.name}
+                            </a>
+                            {submenu && (
+                                <a 
+                                    href="#"
+                                    onClick={(e) => {
+                                        submenu.onClick(e);
+                                        setMenuOpen(false);
+                                    }}
+                                    className="text-gray-500 hover:text-brand-orange font-medium px-4 py-1 w-full text-center text-sm bg-gray-50"
+                                >
+                                    + {submenu.label}
+                                </a>
+                            )}
+                        </React.Fragment>
+                    );
+                })}
             </nav>
             <div className="flex flex-col items-center space-y-2 border-t pt-4 pb-4">
                 <a href="#" onClick={(e) => { handlePostPropertyClick(e); setMenuOpen(false); }} className="text-gray-700 hover:text-brand-orange">Post a Property</a>

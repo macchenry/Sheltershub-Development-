@@ -8,8 +8,8 @@ export const navLinks = [
   { name: 'For Rent', href: '#' },
   { name: 'For Sale', href: '#' },
   { name: 'Agencies', href: '#' },
-  { name: 'Agent', href: '#' },
-  { name: 'Developer', href: '#' },
+  { name: 'Agents', href: '#' },
+  { name: 'Developers', href: '#' },
   { name: 'Blog', href: '#' },
   { name: 'Contact', href: '#' },
 ];
