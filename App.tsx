@@ -24,6 +24,19 @@ import NotFoundPage from './components/NotFoundPage';
 import ForgotPasswordPage from './components/ForgotPasswordPage';
 import EmailVerificationPage from './components/EmailVerificationPage';
 import ResetPasswordPage from './components/ResetPasswordPage';
+
+// Admin Pages
+import AdminDashboard from './components/admin/AdminDashboard';
+import AdminProperties from './components/admin/AdminProperties';
+import AdminAgents from './components/admin/AdminAgents';
+import AdminAgencies from './components/admin/AdminAgencies';
+import AdminDevelopers from './components/admin/AdminDevelopers';
+import AdminUsers from './components/admin/AdminUsers';
+import AdminBlog from './components/admin/AdminBlog';
+import AdminSubscriptions from './components/admin/AdminSubscriptions';
+import AdminSettings from './components/admin/AdminSettings';
+import AdminReports from './components/admin/AdminReports';
+
 import { featuredProperties, latestProperties, adSliderImages, wideAdSliderImages } from './constants';
 
 const App: React.FC = () => {
@@ -35,21 +48,22 @@ const App: React.FC = () => {
   };
 
   const renderContent = () => {
-    if (currentPage === 'login') {
-      return <LoginPage onNavigate={handleNavigate} />;
-    }
-
-    if (currentPage === 'forgot-password') {
-        return <ForgotPasswordPage onNavigate={handleNavigate} />;
-    }
-
-    if (currentPage === 'reset-password') {
-        return <ResetPasswordPage onNavigate={handleNavigate} />;
-    }
-
-    if (currentPage === 'email-verification') {
-        return <EmailVerificationPage onNavigate={handleNavigate} />;
-    }
+    if (currentPage === 'login') return <LoginPage onNavigate={handleNavigate} />;
+    if (currentPage === 'forgot-password') return <ForgotPasswordPage onNavigate={handleNavigate} />;
+    if (currentPage === 'reset-password') return <ResetPasswordPage onNavigate={handleNavigate} />;
+    if (currentPage === 'email-verification') return <EmailVerificationPage onNavigate={handleNavigate} />;
+    
+    // Admin Routes
+    if (currentPage === 'admin-dashboard') return <AdminDashboard onNavigate={handleNavigate} />;
+    if (currentPage === 'admin-properties') return <AdminProperties onNavigate={handleNavigate} />;
+    if (currentPage === 'admin-agents') return <AdminAgents onNavigate={handleNavigate} />;
+    if (currentPage === 'admin-agencies') return <AdminAgencies onNavigate={handleNavigate} />;
+    if (currentPage === 'admin-developers') return <AdminDevelopers onNavigate={handleNavigate} />;
+    if (currentPage === 'admin-users') return <AdminUsers onNavigate={handleNavigate} />;
+    if (currentPage === 'admin-blog') return <AdminBlog onNavigate={handleNavigate} />;
+    if (currentPage === 'admin-subscriptions') return <AdminSubscriptions onNavigate={handleNavigate} />;
+    if (currentPage === 'admin-settings') return <AdminSettings onNavigate={handleNavigate} />;
+    if (currentPage === 'admin-reports') return <AdminReports onNavigate={handleNavigate} />;
 
     if (currentPage === 'all-properties') {
       return (
@@ -61,53 +75,18 @@ const App: React.FC = () => {
       );
     }
 
-    if (currentPage === 'property-detail') {
-        return <SingleProperty onNavigate={handleNavigate} />;
-    }
-
-    if (currentPage === 'add-property') {
-      return <AddPropertyPage onNavigate={handleNavigate} />;
-    }
-
-    if (currentPage === 'agencies') {
-      return <AgenciesPage onNavigate={handleNavigate} />;
-    }
-
-    if (currentPage === 'agency-detail') {
-      return <SingleAgencyPage onNavigate={handleNavigate} />;
-    }
-
-    if (currentPage === 'add-agency') {
-      return <AddAgencyPage onNavigate={handleNavigate} />;
-    }
-
-    if (currentPage === 'add-agent') {
-      return <AddAgentPage onNavigate={handleNavigate} />;
-    }
-
-    if (currentPage === 'add-developer') {
-      return <AddDeveloperPage onNavigate={handleNavigate} />;
-    }
-
-    if (currentPage === 'developers') {
-        return <DevelopersPage onNavigate={handleNavigate} />;
-    }
-
-    if (currentPage === 'developer-detail') {
-        return <SingleDeveloperPage onNavigate={handleNavigate} />;
-    }
-
-    if (currentPage === 'search-results') {
-        return <SearchResultsPage onNavigate={handleNavigate} />;
-    }
-
-    if (currentPage === 'sitemap') {
-        return <SitemapPage onNavigate={handleNavigate} />;
-    }
-
-    if (currentPage === '404') {
-        return <NotFoundPage onNavigate={handleNavigate} />;
-    }
+    if (currentPage === 'property-detail') return <SingleProperty onNavigate={handleNavigate} />;
+    if (currentPage === 'add-property') return <AddPropertyPage onNavigate={handleNavigate} />;
+    if (currentPage === 'agencies') return <AgenciesPage onNavigate={handleNavigate} />;
+    if (currentPage === 'agency-detail') return <SingleAgencyPage onNavigate={handleNavigate} />;
+    if (currentPage === 'add-agency') return <AddAgencyPage onNavigate={handleNavigate} />;
+    if (currentPage === 'add-agent') return <AddAgentPage onNavigate={handleNavigate} />;
+    if (currentPage === 'add-developer') return <AddDeveloperPage onNavigate={handleNavigate} />;
+    if (currentPage === 'developers') return <DevelopersPage onNavigate={handleNavigate} />;
+    if (currentPage === 'developer-detail') return <SingleDeveloperPage onNavigate={handleNavigate} />;
+    if (currentPage === 'search-results') return <SearchResultsPage onNavigate={handleNavigate} />;
+    if (currentPage === 'sitemap') return <SitemapPage onNavigate={handleNavigate} />;
+    if (currentPage === '404') return <NotFoundPage onNavigate={handleNavigate} />;
 
     // Home Page
     return (

@@ -20,7 +20,7 @@ const SitemapPage: React.FC<SitemapPageProps> = ({ onNavigate }) => {
         { name: 'Reset Password', page: 'reset-password' },
         { name: 'Email Verification', page: 'email-verification' },
         { name: 'Search Results', page: 'search-results' },
-        { name: 'Contact', page: 'home' }, // Assuming contact is on home or separate
+        { name: 'Contact', page: 'home' }, 
     ]},
     { title: 'Properties', links: [
         { name: 'All Properties', page: 'all-properties' },
@@ -34,12 +34,23 @@ const SitemapPage: React.FC<SitemapPageProps> = ({ onNavigate }) => {
     ]},
     { title: 'Agents', links: [
         { name: 'Register Agent', page: 'add-agent' },
-        // Add Agent List link if exists
     ]},
     { title: 'Developers', links: [
         { name: 'Developers List', page: 'developers' },
         { name: 'Single Developer Detail (Demo)', page: 'developer-detail' },
         { name: 'Register Developer', page: 'add-developer' },
+    ]},
+    { title: 'Admin', links: [
+        { name: 'Dashboard', page: 'admin-dashboard' },
+        { name: 'Manage Properties', page: 'admin-properties' },
+        { name: 'Manage Agents', page: 'admin-agents' },
+        { name: 'Manage Agencies', page: 'admin-agencies' },
+        { name: 'Manage Developers', page: 'admin-developers' },
+        { name: 'Manage Users', page: 'admin-users' },
+        { name: 'Manage Blog', page: 'admin-blog' },
+        { name: 'Subscriptions', page: 'admin-subscriptions' },
+        { name: 'Reports', page: 'admin-reports' },
+        { name: 'Settings', page: 'admin-settings' },
     ]},
   ];
 
