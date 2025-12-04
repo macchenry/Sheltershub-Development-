@@ -1,8 +1,4 @@
 
-
-
-
-
 import React, { useState } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -22,6 +18,8 @@ import AddAgentPage from './components/AddAgentPage';
 import AddDeveloperPage from './components/AddDeveloperPage';
 import DevelopersPage from './components/DevelopersPage';
 import SingleDeveloperPage from './components/SingleDeveloperPage';
+import SearchResultsPage from './components/SearchResultsPage';
+import SitemapPage from './components/SitemapPage';
 import { featuredProperties, latestProperties, adSliderImages, wideAdSliderImages } from './constants';
 
 const App: React.FC = () => {
@@ -42,7 +40,7 @@ const App: React.FC = () => {
         <>
           <Header onNavigate={handleNavigate} activePage={currentPage} />
           <AllProperties onNavigate={handleNavigate} />
-          <Footer />
+          <Footer onNavigate={handleNavigate} />
         </>
       );
     }
@@ -83,6 +81,14 @@ const App: React.FC = () => {
         return <SingleDeveloperPage onNavigate={handleNavigate} />;
     }
 
+    if (currentPage === 'search-results') {
+        return <SearchResultsPage onNavigate={handleNavigate} />;
+    }
+
+    if (currentPage === 'sitemap') {
+        return <SitemapPage onNavigate={handleNavigate} />;
+    }
+
     // Home Page
     return (
       <>
@@ -90,7 +96,7 @@ const App: React.FC = () => {
         <Hero />
         <div className="container mx-auto px-4 relative z-10 -mt-11">
           <div className="w-full lg:w-3/4 mx-auto">
-            <SearchForm />
+            <SearchForm onSearch={() => handleNavigate('search-results')} />
           </div>
         </div>
         <main className="container mx-auto px-4 py-8">
@@ -133,7 +139,7 @@ const App: React.FC = () => {
             </aside>
           </div>
         </main>
-        <Footer />
+        <Footer onNavigate={handleNavigate} />
       </>
     );
   };

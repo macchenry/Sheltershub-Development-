@@ -57,7 +57,7 @@ const AllProperties: React.FC<{ onNavigate: (page: string) => void }> = ({ onNav
             <div className="flex flex-col lg:flex-row gap-8 items-start">
                 
                 {/* Left Sidebar */}
-                <aside className="w-full lg:w-[280px] flex-shrink-0 sticky top-4">
+                <aside className="w-full lg:w-[280px] flex-shrink-0">
                     <FilterSidebar />
                 </aside>
 

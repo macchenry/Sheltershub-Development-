@@ -1,9 +1,24 @@
+
 import React from 'react';
 import { footerLinks } from '../constants';
 
-const Footer: React.FC = () => {
+interface FooterProps {
+  onNavigate?: (page: string) => void;
+}
+
+const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   const propertyTypeLinks = footerLinks['Property Type'];
   
+  const handleLinkClick = (e: React.MouseEvent, href: string, page?: string) => {
+      e.preventDefault();
+      if (onNavigate && page) {
+          onNavigate(page);
+      } else {
+          // Default behavior for external links or unimplemented internal links
+          console.log(`Navigating to ${href}`);
+      }
+  };
+
   return (
     <footer className="bg-brand-blue text-white">
       <div className="container mx-auto px-4 py-12">
@@ -42,6 +57,11 @@ const Footer: React.FC = () => {
               {footerLinks['Support'].map((link) => (
                 <li key={link.name}><a href={link.href} className="hover:text-brand-orange">{link.name}</a></li>
               ))}
+              <li>
+                  <a href="#" onClick={(e) => handleLinkClick(e, '#', 'sitemap')} className="hover:text-brand-orange">
+                    Sitemap
+                  </a>
+              </li>
             </ul>
           </div>
 

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 
 const SearchPill: React.FC<{ text: string; active: boolean; onClick: () => void }> = ({ text, active, onClick }) => (
@@ -78,9 +79,19 @@ const NumericInput: React.FC<{ placeholder: string }> = ({ placeholder }) => {
   );
 };
 
+interface SearchFormProps {
+    onSearch?: () => void;
+}
 
-const SearchForm: React.FC = () => {
+const SearchForm: React.FC<SearchFormProps> = ({ onSearch }) => {
   const [activeTab, setActiveTab] = useState('For Rent');
+
+  const handleSearchClick = (e: React.MouseEvent) => {
+      e.preventDefault();
+      if (onSearch) {
+          onSearch();
+      }
+  };
 
   return (
     <div className="w-full">
@@ -101,7 +112,10 @@ const SearchForm: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <NumericInput placeholder="No. of Bedrooms" />
             <NumericInput placeholder="Area Size" />
-            <button className="w-full bg-brand-blue text-white font-bold py-1.5 px-4 rounded hover:bg-brand-blue-dark transition-colors md:col-span-2 lg:col-span-1">
+            <button 
+                onClick={handleSearchClick}
+                className="w-full bg-brand-blue text-white font-bold py-1.5 px-4 rounded hover:bg-brand-blue-dark transition-colors md:col-span-2 lg:col-span-1"
+            >
                 Search
             </button>
         </div>
