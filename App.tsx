@@ -10,6 +10,9 @@ import Footer from './components/Footer';
 import AllProperties from './components/AllProperties';
 import LoginPage from './components/LoginPage';
 import SingleProperty from './components/SingleProperty';
+import AddPropertyPage from './components/AddPropertyPage';
+import AgenciesPage from './components/AgenciesPage';
+import SingleAgencyPage from './components/SingleAgencyPage';
 import { featuredProperties, latestProperties, adSliderImages, wideAdSliderImages } from './constants';
 
 const App: React.FC = () => {
@@ -37,6 +40,18 @@ const App: React.FC = () => {
 
     if (currentPage === 'property-detail') {
         return <SingleProperty onNavigate={handleNavigate} />;
+    }
+
+    if (currentPage === 'add-property') {
+      return <AddPropertyPage onNavigate={handleNavigate} />;
+    }
+
+    if (currentPage === 'agencies') {
+      return <AgenciesPage onNavigate={handleNavigate} />;
+    }
+
+    if (currentPage === 'agency-detail') {
+      return <SingleAgencyPage onNavigate={handleNavigate} />;
     }
 
     // Home Page
