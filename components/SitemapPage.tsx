@@ -16,6 +16,8 @@ const SitemapPage: React.FC<SitemapPageProps> = ({ onNavigate }) => {
     { title: 'Main', links: [
         { name: 'Home', page: 'home' },
         { name: 'Login / Register', page: 'login' },
+        { name: 'Forgot Password', page: 'forgot-password' },
+        { name: 'Email Verification', page: 'email-verification' },
         { name: 'Search Results', page: 'search-results' },
         { name: 'Contact', page: 'home' }, // Assuming contact is on home or separate
     ]},

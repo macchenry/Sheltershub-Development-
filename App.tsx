@@ -20,6 +20,9 @@ import DevelopersPage from './components/DevelopersPage';
 import SingleDeveloperPage from './components/SingleDeveloperPage';
 import SearchResultsPage from './components/SearchResultsPage';
 import SitemapPage from './components/SitemapPage';
+import NotFoundPage from './components/NotFoundPage';
+import ForgotPasswordPage from './components/ForgotPasswordPage';
+import EmailVerificationPage from './components/EmailVerificationPage';
 import { featuredProperties, latestProperties, adSliderImages, wideAdSliderImages } from './constants';
 
 const App: React.FC = () => {
@@ -33,6 +36,14 @@ const App: React.FC = () => {
   const renderContent = () => {
     if (currentPage === 'login') {
       return <LoginPage onNavigate={handleNavigate} />;
+    }
+
+    if (currentPage === 'forgot-password') {
+        return <ForgotPasswordPage onNavigate={handleNavigate} />;
+    }
+
+    if (currentPage === 'email-verification') {
+        return <EmailVerificationPage onNavigate={handleNavigate} />;
     }
 
     if (currentPage === 'all-properties') {
@@ -87,6 +98,10 @@ const App: React.FC = () => {
 
     if (currentPage === 'sitemap') {
         return <SitemapPage onNavigate={handleNavigate} />;
+    }
+
+    if (currentPage === '404') {
+        return <NotFoundPage onNavigate={handleNavigate} />;
     }
 
     // Home Page
