@@ -24,6 +24,17 @@ import NotFoundPage from './components/NotFoundPage';
 import ForgotPasswordPage from './components/ForgotPasswordPage';
 import EmailVerificationPage from './components/EmailVerificationPage';
 import ResetPasswordPage from './components/ResetPasswordPage';
+import BlogPage from './components/BlogPage';
+import SingleBlogPage from './components/SingleBlogPage';
+import AboutUsPage from './components/AboutUsPage';
+import ContactPage from './components/ContactPage';
+import FAQPage from './components/FAQPage';
+import TermsPage from './components/TermsPage';
+import UserProfilePage from './components/UserProfilePage';
+import ComparePropertiesPage from './components/ComparePropertiesPage';
+import FavoritesPage from './components/FavoritesPage';
+import ReportFraudPage from './components/ReportFraudPage';
+import AccessDeniedPage from './components/AccessDeniedPage';
 
 // Admin Pages
 import AdminDashboard from './components/admin/AdminDashboard';
@@ -33,9 +44,12 @@ import AdminAgencies from './components/admin/AdminAgencies';
 import AdminDevelopers from './components/admin/AdminDevelopers';
 import AdminUsers from './components/admin/AdminUsers';
 import AdminBlog from './components/admin/AdminBlog';
+import AdminAddBlog from './components/admin/AdminAddBlog';
 import AdminSubscriptions from './components/admin/AdminSubscriptions';
 import AdminSettings from './components/admin/AdminSettings';
 import AdminReports from './components/admin/AdminReports';
+import AdminRegister from './components/admin/AdminRegister';
+import EditorRegister from './components/admin/EditorRegister';
 
 // Developer Pages
 import DeveloperDashboard from './components/developer/DeveloperDashboard';
@@ -50,34 +64,61 @@ import AgentAddProperty from './components/agent/AgentAddProperty';
 import AgentPerformance from './components/agent/AgentPerformance';
 import AgentMessages from './components/agent/AgentMessages';
 import AgentSettings from './components/agent/AgentSettings';
+import AgentVerificationPage from './components/agent/AgentVerificationPage';
+
+// Agency Pages
+import AgencyDashboard from './components/agency/AgencyDashboard';
+import AgencyTeam from './components/agency/AgencyTeam';
+import AgencyAddAgent from './components/agency/AgencyAddAgent';
+import AgencyProperties from './components/agency/AgencyProperties';
+import AgencySettings from './components/agency/AgencySettings';
 
 import { featuredProperties, latestProperties, adSliderImages, wideAdSliderImages } from './constants';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('home');
+  const [userRole, setUserRole] = useState<string>('guest'); // 'admin', 'editor', 'agent', 'agency', 'developer', 'user', 'guest'
 
   const handleNavigate = (page: string) => {
     setCurrentPage(page);
     window.scrollTo(0, 0);
   };
 
+  const handleLogin = (role: string) => {
+    setUserRole(role);
+  };
+
+  // Helper to check permission and render
+  const renderRestricted = (Component: React.ReactNode, allowedRoles: string[]) => {
+    if (allowedRoles.includes(userRole)) {
+      return Component;
+    }
+    return <AccessDeniedPage onNavigate={handleNavigate} />;
+  };
+
   const renderContent = () => {
-    if (currentPage === 'login') return <LoginPage onNavigate={handleNavigate} />;
+    if (currentPage === 'login') return <LoginPage onNavigate={handleNavigate} onLogin={handleLogin} />;
     if (currentPage === 'forgot-password') return <ForgotPasswordPage onNavigate={handleNavigate} />;
     if (currentPage === 'reset-password') return <ResetPasswordPage onNavigate={handleNavigate} />;
     if (currentPage === 'email-verification') return <EmailVerificationPage onNavigate={handleNavigate} />;
+    if (currentPage === 'access-denied') return <AccessDeniedPage onNavigate={handleNavigate} />;
+    if (currentPage === 'editor-register') return <EditorRegister onNavigate={handleNavigate} />;
     
     // Admin Routes
-    if (currentPage === 'admin-dashboard') return <AdminDashboard onNavigate={handleNavigate} />;
-    if (currentPage === 'admin-properties') return <AdminProperties onNavigate={handleNavigate} />;
-    if (currentPage === 'admin-agents') return <AdminAgents onNavigate={handleNavigate} />;
-    if (currentPage === 'admin-agencies') return <AdminAgencies onNavigate={handleNavigate} />;
-    if (currentPage === 'admin-developers') return <AdminDevelopers onNavigate={handleNavigate} />;
-    if (currentPage === 'admin-users') return <AdminUsers onNavigate={handleNavigate} />;
-    if (currentPage === 'admin-blog') return <AdminBlog onNavigate={handleNavigate} />;
-    if (currentPage === 'admin-subscriptions') return <AdminSubscriptions onNavigate={handleNavigate} />;
-    if (currentPage === 'admin-settings') return <AdminSettings onNavigate={handleNavigate} />;
-    if (currentPage === 'admin-reports') return <AdminReports onNavigate={handleNavigate} />;
+    if (currentPage === 'admin-dashboard') return renderRestricted(<AdminDashboard onNavigate={handleNavigate} userRole={userRole} />, ['admin', 'editor']);
+    if (currentPage === 'admin-properties') return renderRestricted(<AdminProperties onNavigate={handleNavigate} userRole={userRole} />, ['admin', 'editor']);
+    if (currentPage === 'admin-blog') return renderRestricted(<AdminBlog onNavigate={handleNavigate} userRole={userRole} />, ['admin', 'editor']);
+    if (currentPage === 'admin-add-blog') return renderRestricted(<AdminAddBlog onNavigate={handleNavigate} userRole={userRole} />, ['admin', 'editor']);
+    if (currentPage === 'admin-reports') return renderRestricted(<AdminReports onNavigate={handleNavigate} userRole={userRole} />, ['admin', 'editor']); // Editor can view basic reports (handled in component)
+    
+    // Admin Only Routes
+    if (currentPage === 'admin-agents') return renderRestricted(<AdminAgents onNavigate={handleNavigate} />, ['admin']);
+    if (currentPage === 'admin-agencies') return renderRestricted(<AdminAgencies onNavigate={handleNavigate} />, ['admin']);
+    if (currentPage === 'admin-developers') return renderRestricted(<AdminDevelopers onNavigate={handleNavigate} />, ['admin']);
+    if (currentPage === 'admin-users') return renderRestricted(<AdminUsers onNavigate={handleNavigate} />, ['admin']);
+    if (currentPage === 'admin-subscriptions') return renderRestricted(<AdminSubscriptions onNavigate={handleNavigate} />, ['admin']);
+    if (currentPage === 'admin-settings') return renderRestricted(<AdminSettings onNavigate={handleNavigate} />, ['admin']);
+    if (currentPage === 'admin-register') return renderRestricted(<AdminRegister onNavigate={handleNavigate} userRole={userRole} />, ['admin']);
 
     // Developer Dashboard Routes
     if (currentPage === 'developer-dashboard') return <DeveloperDashboard onNavigate={handleNavigate} />;
@@ -92,6 +133,14 @@ const App: React.FC = () => {
     if (currentPage === 'agent-performance') return <AgentPerformance onNavigate={handleNavigate} />;
     if (currentPage === 'agent-messages') return <AgentMessages onNavigate={handleNavigate} />;
     if (currentPage === 'agent-settings') return <AgentSettings onNavigate={handleNavigate} />;
+    if (currentPage === 'agent-verification') return <AgentVerificationPage onNavigate={handleNavigate} />;
+
+    // Agency Dashboard Routes
+    if (currentPage === 'agency-dashboard') return <AgencyDashboard onNavigate={handleNavigate} />;
+    if (currentPage === 'agency-team') return <AgencyTeam onNavigate={handleNavigate} />;
+    if (currentPage === 'agency-add-agent') return <AgencyAddAgent onNavigate={handleNavigate} />;
+    if (currentPage === 'agency-properties') return <AgencyProperties onNavigate={handleNavigate} />;
+    if (currentPage === 'agency-settings') return <AgencySettings onNavigate={handleNavigate} />;
 
 
     if (currentPage === 'all-properties') {
@@ -106,6 +155,8 @@ const App: React.FC = () => {
 
     if (currentPage === 'property-detail') return <SingleProperty onNavigate={handleNavigate} />;
     if (currentPage === 'add-property') return <AddPropertyPage onNavigate={handleNavigate} />;
+    if (currentPage === 'favorites') return <FavoritesPage onNavigate={handleNavigate} />;
+    if (currentPage === 'compare-properties') return <ComparePropertiesPage onNavigate={handleNavigate} />;
     if (currentPage === 'agencies') return <AgenciesPage onNavigate={handleNavigate} />;
     if (currentPage === 'agency-detail') return <SingleAgencyPage onNavigate={handleNavigate} />;
     if (currentPage === 'add-agency') return <AddAgencyPage onNavigate={handleNavigate} />;
@@ -115,6 +166,14 @@ const App: React.FC = () => {
     if (currentPage === 'developer-detail') return <SingleDeveloperPage onNavigate={handleNavigate} />;
     if (currentPage === 'search-results') return <SearchResultsPage onNavigate={handleNavigate} />;
     if (currentPage === 'sitemap') return <SitemapPage onNavigate={handleNavigate} />;
+    if (currentPage === 'blog') return <BlogPage onNavigate={handleNavigate} />;
+    if (currentPage === 'blog-detail') return <SingleBlogPage onNavigate={handleNavigate} />;
+    if (currentPage === 'about') return <AboutUsPage onNavigate={handleNavigate} />;
+    if (currentPage === 'contact') return <ContactPage onNavigate={handleNavigate} />;
+    if (currentPage === 'faq') return <FAQPage onNavigate={handleNavigate} />;
+    if (currentPage === 'terms') return <TermsPage onNavigate={handleNavigate} />;
+    if (currentPage === 'report-fraud') return <ReportFraudPage onNavigate={handleNavigate} />;
+    if (currentPage === 'user-profile') return <UserProfilePage onNavigate={handleNavigate} />;
     if (currentPage === '404') return <NotFoundPage onNavigate={handleNavigate} />;
 
     // Home Page

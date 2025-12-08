@@ -45,21 +45,44 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           <div>
             <h3 className="font-bold mb-4">About Us</h3>
             <ul className="space-y-2 text-sm">
-              {footerLinks['About Us'].map((link) => (
-                <li key={link.name}><a href={link.href} className="hover:text-brand-orange">{link.name}</a></li>
-              ))}
+              <li>
+                  <a href="#" onClick={(e) => handleLinkClick(e, '#', 'about')} className="hover:text-brand-orange">
+                    About Sheltershub
+                  </a>
+              </li>
+              <li>
+                  <a href="#" onClick={(e) => handleLinkClick(e, '#', 'terms')} className="hover:text-brand-orange">
+                    Terms of Use
+                  </a>
+              </li>
+              <li><a href="#" className="hover:text-brand-orange">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-brand-orange">Cookie Policy</a></li>
             </ul>
           </div>
 
           <div>
             <h3 className="font-bold mb-4">Support</h3>
             <ul className="space-y-2 text-sm">
-              {footerLinks['Support'].map((link) => (
-                <li key={link.name}><a href={link.href} className="hover:text-brand-orange">{link.name}</a></li>
-              ))}
+              <li><a href="mailto:support@sheltershub.com" className="hover:text-brand-orange">support@sheltershub.com</a></li>
+              <li><a href="#" className="hover:text-brand-orange">Safety tips</a></li>
+              <li>
+                  <a href="#" onClick={(e) => handleLinkClick(e, '#', 'contact')} className="hover:text-brand-orange">
+                    Contact Us
+                  </a>
+              </li>
+              <li>
+                  <a href="#" onClick={(e) => handleLinkClick(e, '#', 'faq')} className="hover:text-brand-orange">
+                    FAQ
+                  </a>
+              </li>
               <li>
                   <a href="#" onClick={(e) => handleLinkClick(e, '#', 'sitemap')} className="hover:text-brand-orange">
                     Sitemap
+                  </a>
+              </li>
+              <li>
+                  <a href="#" onClick={(e) => handleLinkClick(e, '#', 'report-fraud')} className="hover:text-brand-orange">
+                    Report Fraud
                   </a>
               </li>
             </ul>

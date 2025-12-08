@@ -15,6 +15,41 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
   const [activeImage, setActiveImage] = useState(0);
   const [isFavorited, setIsFavorited] = useState(false);
 
+  // Reviews State
+  const [reviews, setReviews] = useState([
+    { id: 1, name: "Alice Freeman", rating: 5, date: "Oct 12, 2024", comment: "Absolutely stunning property! The view is breathtaking." },
+    { id: 2, name: "John Smith", rating: 4, date: "Sep 28, 2024", comment: "Great location and amenities. Garage is a bit small though." }
+  ]);
+  const [newReview, setNewReview] = useState({ name: '', rating: 0, comment: '' });
+
+  // Calculate Average Rating
+  const averageRating = reviews.length > 0 
+    ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1) 
+    : "0.0";
+
+  const handleReviewSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newReview.name || !newReview.comment || newReview.rating === 0) return;
+    
+    const review = {
+      id: reviews.length + 1,
+      name: newReview.name,
+      rating: newReview.rating,
+      date: "Just now",
+      comment: newReview.comment
+    };
+    setReviews([review, ...reviews]);
+    setNewReview({ name: '', rating: 0, comment: '' });
+  };
+
+  const renderStars = (rating: number) => {
+    return [...Array(5)].map((_, i) => (
+      <svg key={i} className={`w-4 h-4 ${i < rating ? 'text-[#F9A826]' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
+        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+      </svg>
+    ));
+  };
+
   // Mock Data for the selected property
   const property = {
     id: propertyId || 101,
@@ -24,6 +59,11 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
     priceUSD: 1250000,
     description: "Experience the pinnacle of luxury living in this stunning modern family home. Nestled in a quiet, tree-lined street, this property offers a perfect blend of contemporary design and comfort. The spacious open-plan living area is flooded with natural light, featuring high ceilings and premium finishes throughout.\n\nThe gourmet kitchen is equipped with state-of-the-art appliances, custom cabinetry, and a large island, making it a chef's dream. Step outside to your private oasis, complete with a landscaped garden and a sparkling swimming pool, perfect for entertaining guests or enjoying a quiet evening with family.",
     type: "House",
+    propertyTypeDetail: "Detached Villa",
+    usage: "Residential",
+    region: "Greater Accra",
+    city: "Accra",
+    neighborhood: "Cantonments",
     status: "For Sale",
     bedrooms: 5,
     bathrooms: 4,
@@ -57,6 +97,23 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const handleNextImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setActiveImage((prev) => (prev === property.images.length - 1 ? 0 : prev + 1));
+  };
+
+  const handlePrevImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setActiveImage((prev) => (prev === 0 ? property.images.length - 1 : prev - 1));
+  };
+
+  const handleReportClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    // Save property context to session storage for the report page to pick up
+    sessionStorage.setItem('reportTarget', `Property ID: ${property.id} - ${property.title}`);
+    onNavigate('report-fraud');
+  };
 
   return (
     <div className="bg-gray-50 min-h-screen font-sans">
@@ -111,9 +168,26 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
 
         {/* Gallery Section */}
         <div className="mb-10">
-            <div className="rounded-xl overflow-hidden shadow-sm h-[300px] md:h-[500px] w-full bg-gray-200 mb-4 relative">
-                <img src={property.images[activeImage]} alt={property.title} className="w-full h-full object-cover" />
-                <button className="absolute top-4 right-4 bg-white/90 hover:bg-white p-2 rounded-full text-gray-700 shadow transition-all">
+            <div className="rounded-xl overflow-hidden shadow-sm h-[300px] md:h-[500px] w-full bg-gray-200 mb-4 relative group">
+                <img src={property.images[activeImage]} alt={property.title} className="w-full h-full object-cover transition-transform duration-500" />
+                
+                {/* Navigation Arrows */}
+                <button 
+                    onClick={handlePrevImage}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/60 text-white p-2 rounded-full transition-colors opacity-0 group-hover:opacity-100 backdrop-blur-sm"
+                    aria-label="Previous image"
+                >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <button 
+                    onClick={handleNextImage}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/60 text-white p-2 rounded-full transition-colors opacity-0 group-hover:opacity-100 backdrop-blur-sm"
+                    aria-label="Next image"
+                >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+
+                <button className="absolute top-4 right-4 bg-white/90 hover:bg-white p-2 rounded-full text-gray-700 shadow transition-all z-10">
                     <HeartIcon className="w-6 h-6" isFilled={isFavorited} />
                 </button>
             </div>
@@ -135,6 +209,32 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
             {/* Left Content Column */}
             <div className="lg:col-span-8 space-y-8">
                 
+                {/* Core Property Details (Region, City, Area, Type, Usage) */}
+                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                        <div className="flex flex-col">
+                            <span className="text-xs text-gray-500 uppercase tracking-wide mb-1 font-semibold">Region</span>
+                            <span className="text-gray-800 font-bold text-sm md:text-base">{property.region}</span>
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-xs text-gray-500 uppercase tracking-wide mb-1 font-semibold">City</span>
+                            <span className="text-gray-800 font-bold text-sm md:text-base">{property.city}</span>
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-xs text-gray-500 uppercase tracking-wide mb-1 font-semibold">Area</span>
+                            <span className="text-gray-800 font-bold text-sm md:text-base">{property.neighborhood}</span>
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-xs text-gray-500 uppercase tracking-wide mb-1 font-semibold">Type of Property</span>
+                            <span className="text-gray-800 font-bold text-sm md:text-base">{property.propertyTypeDetail}</span>
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-xs text-gray-500 uppercase tracking-wide mb-1 font-semibold">Property Usage</span>
+                            <span className="text-gray-800 font-bold text-sm md:text-base">{property.usage}</span>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Key Info Strip */}
                 <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-4">
@@ -249,7 +349,7 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
             <aside className="lg:col-span-4 space-y-6">
                 
                 {/* Agent Card */}
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm sticky top-4">
+                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                     <div className="flex items-center gap-4 mb-6">
                         <img src={property.agent.image} alt={property.agent.name} className="w-16 h-16 rounded-full object-cover border-2 border-gray-100" />
                         <div>
@@ -290,12 +390,100 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
                         <svg className="w-5 h-5 text-[#F9A826]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                         Safety Tips
                     </h4>
-                    <ul className="text-xs text-gray-500 space-y-2 list-disc list-inside">
+                    <ul className="text-xs text-gray-500 space-y-2 list-disc list-inside mb-4">
                         <li>Avoid sending money before viewing.</li>
                         <li>Check all documentation carefully.</li>
                         <li>Meet in a safe, public place.</li>
                     </ul>
+                    <div className="border-t border-gray-100 pt-3">
+                        <a 
+                            href="#" 
+                            onClick={handleReportClick}
+                            className="text-xs text-red-500 hover:text-red-700 font-semibold flex items-center gap-1 transition-colors"
+                        >
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            Report This Listing
+                        </a>
+                    </div>
                  </div>
+
+                 {/* Property Review & Rating Section */}
+                 <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                    <h3 className="text-xl font-bold text-[#0A2B4C] mb-4">Reviews & Ratings</h3>
+                    
+                    {/* Summary */}
+                    <div className="flex items-center gap-4 mb-6 bg-gray-50 p-4 rounded-lg">
+                       <div className="text-4xl font-bold text-[#0A2B4C]">{averageRating}</div>
+                       <div>
+                          <div className="flex text-[#F9A826] mb-1">{renderStars(Math.round(parseFloat(averageRating)))}</div>
+                          <div className="text-xs text-gray-500 font-medium">{reviews.length} Reviews</div>
+                       </div>
+                    </div>
+
+                    {/* Review List */}
+                    <div className="space-y-5 mb-8 max-h-80 overflow-y-auto pr-2">
+                       {reviews.map(r => (
+                          <div key={r.id} className="border-b border-gray-100 pb-4 last:border-0 last:pb-0">
+                             <div className="flex justify-between items-start mb-1">
+                                <span className="font-bold text-sm text-[#0A2B4C]">{r.name}</span>
+                                <span className="text-[10px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{r.date}</span>
+                             </div>
+                             <div className="flex text-[#F9A826] mb-2 scale-75 origin-left">{renderStars(r.rating)}</div>
+                             <p className="text-xs text-gray-600 leading-relaxed italic">"{r.comment}"</p>
+                          </div>
+                       ))}
+                    </div>
+
+                    {/* Write a Review Form */}
+                    <div className="border-t border-gray-200 pt-6">
+                       <h4 className="font-bold text-sm text-[#0A2B4C] mb-3 uppercase tracking-wide">Write a Review</h4>
+                       <form onSubmit={handleReviewSubmit} className="space-y-4">
+                          <div>
+                            <label className="block text-xs font-semibold text-gray-500 mb-1">Rating</label>
+                            <div className="flex gap-1">
+                               {[1, 2, 3, 4, 5].map((star) => (
+                                  <button
+                                    key={star}
+                                    type="button"
+                                    onClick={() => setNewReview({ ...newReview, rating: star })}
+                                    className="focus:outline-none transition-transform hover:scale-110"
+                                  >
+                                    <svg className={`w-6 h-6 ${star <= newReview.rating ? 'text-[#F9A826]' : 'text-gray-300'} transition-colors`} fill="currentColor" viewBox="0 0 20 20">
+                                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                  </button>
+                               ))}
+                            </div>
+                          </div>
+                          
+                          <input 
+                            type="text" 
+                            required
+                            value={newReview.name}
+                            onChange={(e) => setNewReview({...newReview, name: e.target.value})}
+                            placeholder="Your Name" 
+                            className="w-full border border-gray-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#F9A826] focus:ring-1 focus:ring-[#F9A826]" 
+                          />
+                          
+                          <textarea 
+                            required
+                            rows={3} 
+                            value={newReview.comment}
+                            onChange={(e) => setNewReview({...newReview, comment: e.target.value})}
+                            placeholder="Share your experience..." 
+                            className="w-full border border-gray-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#F9A826] focus:ring-1 focus:ring-[#F9A826]"
+                          ></textarea>
+                          
+                          <button 
+                            type="submit" 
+                            className="w-full bg-[#0A2B4C] text-white font-bold py-2 rounded text-sm hover:bg-[#08223c] transition-colors"
+                          >
+                            Submit Review
+                          </button>
+                       </form>
+                    </div>
+                 </div>
+
             </aside>
         </div>
 

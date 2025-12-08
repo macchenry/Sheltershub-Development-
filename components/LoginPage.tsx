@@ -3,14 +3,37 @@ import React, { useState } from 'react';
 
 interface LoginPageProps {
   onNavigate: (page: string) => void;
+  onLogin: (role: string) => void;
 }
 
-const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
+const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onLogin }) => {
   const [view, setView] = useState<'login' | 'register' | 'forgot' | 'verify'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
+  
+  // User Type State
+  const [userType, setUserType] = useState('Buyer');
+  const userTypes = ['Buyer', 'Agent', 'Agency', 'Developer', 'Administrator', 'Editor'];
+
+  // Handle User Type Selection
+  const handleUserTypeChange = (type: string) => {
+    setUserType(type);
+    if (type === 'Agent') {
+      setEmail('agent@sheltershub.com');
+      setPassword('demo123');
+    } else if (type === 'Administrator') {
+      setEmail('admin@sheltershub.com');
+      setPassword('admin123');
+    } else if (type === 'Editor') {
+      setEmail('editor@sheltershub.com');
+      setPassword('editor123');
+    } else {
+      setEmail('');
+      setPassword('');
+    }
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,12 +41,36 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
     // Simulate API call
     setTimeout(() => {
       setLoading(false);
-      setView('verify');
+      
+      // Role-based routing
+      if (userType === 'Administrator') {
+         onLogin('admin');
+         onNavigate('admin-dashboard');
+      } else if (userType === 'Editor') {
+         onLogin('editor');
+         onNavigate('admin-dashboard'); // Editor shares the same layout but with restricted access
+      } else if (userType === 'Agent') {
+         onLogin('agent');
+         onNavigate('agent-verification');
+      } else if (userType === 'Developer') {
+         onLogin('developer');
+         onNavigate('developer-dashboard');
+      } else if (userType === 'Agency') {
+         onLogin('agency');
+         onNavigate('agency-dashboard'); 
+      } else {
+         onLogin('user');
+         setView('verify');
+      }
     }, 1500);
   };
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
+    if (userType === 'Editor') {
+        onNavigate('editor-register');
+        return;
+    }
     setLoading(true);
     // Simulate API call
     setTimeout(() => {
@@ -46,7 +93,11 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      onNavigate('home');
+      // Route based on user type
+      if (userType === 'Agent') onNavigate('agent-verification');
+      else if (userType === 'Developer') onNavigate('developer-dashboard');
+      else if (userType === 'Agency') onNavigate('agency-dashboard'); 
+      else onNavigate('home');
     }, 1000);
   };
 
@@ -106,7 +157,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
               <div className="space-y-4">
                 <button
                   type="button"
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#0A2B4C] hover:bg-[#08223c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0A2B4C]"
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#0A2B4C] hover:bg-[#08223c] focus:outline-none"
                   onClick={() => window.open('https://gmail.com', '_blank')}
                 >
                   Open Email App
@@ -137,6 +188,36 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
           ) : (
             <form className="space-y-6" onSubmit={view === 'login' ? handleLogin : view === 'register' ? handleRegister : handleForgot}>
               
+              {/* User Type Selection */}
+              {(view === 'login' || view === 'register') && (
+                <div className="mb-6">
+                  <label className="block text-sm font-bold text-gray-700 mb-3 text-center">
+                    I am a...
+                  </label>
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    {userTypes.map((type) => (
+                      <button
+                        key={type}
+                        type="button"
+                        onClick={() => handleUserTypeChange(type)}
+                        className={`px-3 py-1.5 text-xs font-semibold rounded-full transition-all border ${
+                          userType === type
+                            ? 'bg-[#0A2B4C] text-white border-[#0A2B4C] shadow-md transform scale-105'
+                            : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
+                        }`}
+                      >
+                        {type}
+                      </button>
+                    ))}
+                  </div>
+                  {['Agent', 'Administrator', 'Editor'].includes(userType) && view === 'login' && (
+                      <p className="text-center text-xs text-green-600 mt-2 font-medium">
+                          ✓ Demo credentials auto-filled
+                      </p>
+                  )}
+                </div>
+              )}
+
               {view === 'register' && (
                 <div>
                   <label htmlFor="username" className="block text-sm font-medium text-gray-700">
@@ -244,7 +325,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
       <div className="mt-8 text-center">
          <button onClick={() => onNavigate('home')} className="text-sm text-gray-500 hover:text-[#0A2B4C] flex items-center justify-center mx-auto gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Back to Home
          </button>
