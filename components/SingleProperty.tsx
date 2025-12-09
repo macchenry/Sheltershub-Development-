@@ -153,8 +153,8 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
             const x = (mainImg.width - logoWidth) / 2;
             const y = (mainImg.height - logoHeight) / 2;
 
-            // 3. Draw Logo with Opacity
-            ctx.globalAlpha = 0.3; // 30% Opacity
+            // 3. Draw Logo with Opacity (45%)
+            ctx.globalAlpha = 0.45; // 45% Opacity
             ctx.drawImage(logoImg, x, y, logoWidth, logoHeight);
             ctx.globalAlpha = 1.0; // Reset opacity
 
@@ -302,7 +302,7 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
                 </button>
             </div>
             
-            {/* Thumbnails (Without Watermark as requested) */}
+            {/* Thumbnails (Without Watermark) */}
             <div className="grid grid-cols-5 gap-2 md:gap-4">
                 {property.images.map((img, idx) => (
                     <button 
