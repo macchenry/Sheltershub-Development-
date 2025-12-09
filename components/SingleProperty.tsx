@@ -4,7 +4,7 @@ import Header from './Header';
 import Footer from './Footer';
 import PropertyCard from './PropertyCard';
 import { featuredProperties } from '../constants';
-import { BedIcon, BathIcon, GarageIcon, AreaIcon, HeartIcon, LocationIcon, CheckIcon, ShareIcon, PrintIcon } from './icons/PropertyIcons';
+import { BedIcon, BathIcon, GarageIcon, AreaIcon, HeartIcon, LocationIcon, CheckIcon, ShareIcon, PrintIcon, DownloadIcon } from './icons/PropertyIcons';
 
 interface SinglePropertyProps {
   onNavigate: (page: string) => void;
@@ -14,6 +14,10 @@ interface SinglePropertyProps {
 const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId }) => {
   const [activeImage, setActiveImage] = useState(0);
   const [isFavorited, setIsFavorited] = useState(false);
+  
+  // Watermark State
+  const [watermarkedImage, setWatermarkedImage] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   // Reviews State
   const [reviews, setReviews] = useState([
@@ -98,6 +102,92 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
     window.scrollTo(0, 0);
   }, []);
 
+  // Watermark Generation Logic
+  useEffect(() => {
+    let isMounted = true;
+    setIsGenerating(true);
+    setWatermarkedImage(null); // Clear previous to show loading state
+
+    const generateWatermark = async () => {
+      try {
+        const imageUrl = property.images[activeImage];
+        const logoUrl = "https://i.ibb.co/4RJRrttb/Sheltershub-Logo-png.png";
+
+        // Helper to load image
+        const loadImage = (src: string): Promise<HTMLImageElement> => {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = "anonymous"; // Important to prevent canvas tainting
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = src;
+            });
+        };
+
+        // Load both images
+        const [mainImg, logoImg] = await Promise.all([
+            loadImage(imageUrl),
+            loadImage(logoUrl)
+        ]);
+
+        if (!isMounted) return;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = mainImg.width;
+        canvas.height = mainImg.height;
+        const ctx = canvas.getContext('2d');
+
+        if (ctx) {
+            // 1. Draw Main Image
+            ctx.drawImage(mainImg, 0, 0);
+
+            // 2. Configure Watermark
+            // Scale to 30% of the image's width
+            const watermarkScale = 0.30; 
+            const logoWidth = mainImg.width * watermarkScale;
+            // Maintain aspect ratio
+            const logoAspectRatio = logoImg.width / logoImg.height;
+            const logoHeight = logoWidth / logoAspectRatio;
+
+            // Center the watermark
+            const x = (mainImg.width - logoWidth) / 2;
+            const y = (mainImg.height - logoHeight) / 2;
+
+            // 3. Draw Logo with Opacity
+            ctx.globalAlpha = 0.3; // 30% Opacity
+            ctx.drawImage(logoImg, x, y, logoWidth, logoHeight);
+            ctx.globalAlpha = 1.0; // Reset opacity
+
+            // 4. Set Result
+            setWatermarkedImage(canvas.toDataURL('image/jpeg', 0.95));
+        }
+      } catch (error) {
+        console.error("Watermark generation failed:", error);
+        // Fallback to original image if something fails (e.g. CORS error)
+        if (isMounted) setWatermarkedImage(property.images[activeImage]);
+      } finally {
+        if (isMounted) setIsGenerating(false);
+      }
+    };
+
+    generateWatermark();
+
+    return () => {
+        isMounted = false;
+    };
+  }, [activeImage, property.images]);
+
+  const handleDownload = () => {
+    if (watermarkedImage) {
+        const link = document.createElement('a');
+        link.download = `Sheltershub_Property_${property.id}_${activeImage + 1}.jpg`;
+        link.href = watermarkedImage;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+  };
+
   const handleNextImage = (e: React.MouseEvent) => {
     e.stopPropagation();
     setActiveImage((prev) => (prev === property.images.length - 1 ? 0 : prev + 1));
@@ -110,7 +200,6 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
 
   const handleReportClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    // Save property context to session storage for the report page to pick up
     sessionStorage.setItem('reportTarget', `Property ID: ${property.id} - ${property.title}`);
     onNavigate('report-fraud');
   };
@@ -119,7 +208,7 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
     <div className="bg-gray-50 min-h-screen font-sans">
       <Header onNavigate={onNavigate} activePage="properties" />
 
-      {/* Breadcrumb - Optional but good for UX */}
+      {/* Breadcrumb */}
       <div className="bg-white border-b border-gray-200">
         <div className="container mx-auto px-4 py-4">
             <div className="flex items-center text-sm text-gray-500">
@@ -164,12 +253,33 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
             <button className="flex items-center gap-2 text-gray-600 hover:text-[#0A2B4C] text-sm font-medium transition-colors">
                 <PrintIcon className="w-4 h-4" /> Print
             </button>
+            <button 
+                onClick={handleDownload}
+                disabled={isGenerating || !watermarkedImage}
+                className="flex items-center gap-2 text-gray-600 hover:text-[#0A2B4C] text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-wait"
+            >
+                {isGenerating ? 'Preparing...' : <><DownloadIcon className="w-4 h-4" /> Download</>}
+            </button>
         </div>
 
         {/* Gallery Section */}
         <div className="mb-10">
-            <div className="rounded-xl overflow-hidden shadow-sm h-[300px] md:h-[500px] w-full bg-gray-200 mb-4 relative group">
-                <img src={property.images[activeImage]} alt={property.title} className="w-full h-full object-cover transition-transform duration-500" />
+            <div className="rounded-xl overflow-hidden shadow-sm h-[300px] md:h-[500px] w-full bg-gray-200 mb-4 relative group flex items-center justify-center">
+                {watermarkedImage ? (
+                    <img 
+                        src={watermarkedImage} 
+                        alt={property.title} 
+                        className="w-full h-full object-cover transition-transform duration-500" 
+                    />
+                ) : (
+                    <div className="flex flex-col items-center justify-center text-gray-400">
+                        <svg className="animate-spin h-10 w-10 mb-2 text-[#F9A826]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span className="text-xs font-semibold">Applying Watermark...</span>
+                    </div>
+                )}
                 
                 {/* Navigation Arrows */}
                 <button 
@@ -191,6 +301,8 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
                     <HeartIcon className="w-6 h-6" isFilled={isFavorited} />
                 </button>
             </div>
+            
+            {/* Thumbnails (Without Watermark as requested) */}
             <div className="grid grid-cols-5 gap-2 md:gap-4">
                 {property.images.map((img, idx) => (
                     <button 
