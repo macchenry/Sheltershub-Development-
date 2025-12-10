@@ -55,9 +55,14 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
     ));
   };
 
+  // Helper to format property ID (e.g. SH-010)
+  const formatPropertyId = (id: number) => {
+    return `SH-${id.toString().padStart(3, '0')}`;
+  };
+
   // Mock Data for the selected property
   const property = {
-    id: propertyId || 101,
+    id: propertyId || 10,
     title: "Luxury Villa with Panoramic Ocean Views",
     address: "123 Coastal Highway, Malibu, CA 90265",
     priceGHS: 18500000,
@@ -182,7 +187,7 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
   const handleDownload = () => {
     if (watermarkedImage) {
         const link = document.createElement('a');
-        link.download = `Sheltershub_Property_${property.id}_${activeImage + 1}.jpg`;
+        link.download = `Sheltershub_Property_${formatPropertyId(property.id)}_${activeImage + 1}.jpg`;
         link.href = watermarkedImage;
         document.body.appendChild(link);
         link.click();
@@ -202,7 +207,7 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
 
   const handleReportClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    sessionStorage.setItem('reportTarget', `Property ID: ${property.id} - ${property.title}`);
+    sessionStorage.setItem('reportTarget', `Property ID: ${formatPropertyId(property.id)} - ${property.title}`);
     onNavigate('report-fraud');
   };
 
@@ -237,7 +242,7 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
             <div className="space-y-2">
                 <div className="flex items-center gap-3">
                     <span className="bg-[#F9A826] text-white text-xs font-bold px-2.5 py-1 rounded uppercase tracking-wide">{property.status}</span>
-                    <span className="text-gray-500 text-sm">ID: {property.id}</span>
+                    <span className="text-gray-500 text-sm">ID: {formatPropertyId(property.id)}</span>
                 </div>
                 <h1 className="text-2xl md:text-3xl font-bold text-[#0A2B4C] leading-tight">{property.title}</h1>
                 <div className="flex items-center text-gray-600 text-sm md:text-base">
@@ -418,7 +423,7 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
                         <div className="flex justify-between border-b border-gray-100 pb-2">
                             <span className="text-gray-500 font-medium">Property ID:</span>
-                            <span className="text-gray-800 font-semibold">{property.id}</span>
+                            <span className="text-gray-800 font-semibold">{formatPropertyId(property.id)}</span>
                         </div>
                         <div className="flex justify-between border-b border-gray-100 pb-2">
                             <span className="text-gray-500 font-medium">Property Type:</span>

@@ -50,6 +50,7 @@ import AdminSettings from './components/admin/AdminSettings';
 import AdminReports from './components/admin/AdminReports';
 import AdminRegister from './components/admin/AdminRegister';
 import EditorRegister from './components/admin/EditorRegister';
+import AdminPageEditor from './components/admin/AdminPageEditor';
 
 // Developer Pages
 import DeveloperDashboard from './components/developer/DeveloperDashboard';
@@ -111,6 +112,12 @@ const App: React.FC = () => {
     if (currentPage === 'admin-add-blog') return renderRestricted(<AdminAddBlog onNavigate={handleNavigate} userRole={userRole} />, ['admin', 'editor']);
     if (currentPage === 'admin-reports') return renderRestricted(<AdminReports onNavigate={handleNavigate} userRole={userRole} />, ['admin', 'editor']); // Editor can view basic reports (handled in component)
     
+    // Admin CMS Edit Routes
+    if (currentPage.startsWith('admin-edit-')) {
+        const pageName = currentPage.replace('admin-edit-', '');
+        return renderRestricted(<AdminPageEditor pageName={pageName} onNavigate={handleNavigate} userRole={userRole} />, ['admin', 'editor']);
+    }
+
     // Admin Only Routes
     if (currentPage === 'admin-agents') return renderRestricted(<AdminAgents onNavigate={handleNavigate} />, ['admin']);
     if (currentPage === 'admin-agencies') return renderRestricted(<AdminAgencies onNavigate={handleNavigate} />, ['admin']);

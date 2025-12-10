@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -11,10 +11,11 @@ interface AdminLayoutProps {
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children, onNavigate, activePage, title, userRole }) => {
   const isAdmin = userRole === 'admin';
+  const [isCMSOpen, setIsCMSOpen] = useState(activePage.startsWith('admin-edit-'));
 
   // Base items available to both
   const commonItems = [
-    { name: 'Dashboard', page: 'admin-dashboard', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /> },
+    { name: 'Dashboard', page: 'admin-dashboard', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /> },
     { name: 'Properties', page: 'admin-properties', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /> },
     { name: 'Blog Posts', page: 'admin-blog', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /> },
     { name: 'Reports', page: 'admin-reports', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /> },
@@ -30,11 +31,28 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, onNavigate, activeP
     { name: 'Settings', page: 'admin-settings', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /> },
   ];
 
+  const cmsPages = [
+    { name: 'Home', id: 'home' },
+    { name: 'About Us', id: 'about' },
+    { name: 'Login / Register', id: 'login' },
+    { name: 'User Profile', id: 'user-profile' },
+    { name: 'My Favorites', id: 'favorites' },
+    { name: 'Forgot Password', id: 'forgot-password' },
+    { name: 'Reset Password', id: 'reset-password' },
+    { name: 'Email Verification', id: 'email-verification' },
+    { name: 'Search Results', id: 'search-results' },
+    { name: 'Blog & News', id: 'blog' },
+    { name: 'Single Blog Article (Demo)', id: 'blog-detail' },
+    { name: 'Contact', id: 'contact' },
+    { name: 'FAQ', id: 'faq' },
+    { name: 'Report Fraud', id: 'report-fraud' },
+    { name: 'Terms & Conditions', id: 'terms' },
+    { name: 'Editor Registration', id: 'editor-register' },
+  ];
+
   // Merge items based on role
   const menuItems = isAdmin ? [...commonItems.slice(0, 2), ...adminItems.slice(0, 3), ...adminItems.slice(3, 5), commonItems[2], commonItems[3], adminItems[5]] : commonItems;
 
-  // Insert Register Admin link specifically for admins if needed, or keep it hidden in settings. 
-  // For demo visibility, let's add it to the bottom if admin.
   if (isAdmin) {
       menuItems.push({ name: 'Create Admin', page: 'admin-register', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /> });
   }
@@ -49,7 +67,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, onNavigate, activeP
           </button>
         </div>
         
-        <nav className="flex-1 overflow-y-auto py-4">
+        <nav className="flex-1 overflow-y-auto py-4 custom-scrollbar">
           <ul className="space-y-1 px-3">
             {menuItems.map((item) => (
               <li key={item.page}>
@@ -68,6 +86,40 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, onNavigate, activeP
                 </button>
               </li>
             ))}
+
+            {/* CMS Section */}
+            <li>
+                <button 
+                    onClick={() => setIsCMSOpen(!isCMSOpen)}
+                    className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
+                >
+                    <div className="flex items-center gap-3">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                        Main Pages (CMS)
+                    </div>
+                    <svg className={`w-4 h-4 transition-transform ${isCMSOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                
+                {isCMSOpen && (
+                    <ul className="pl-11 pr-2 space-y-1 mt-1">
+                        {cmsPages.map(page => (
+                            <li key={page.id}>
+                                <button
+                                    onClick={() => onNavigate(`admin-edit-${page.id}`)}
+                                    className={`w-full text-left py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                                        activePage === `admin-edit-${page.id}`
+                                            ? 'text-[#F9A826] bg-white/10'
+                                            : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                    }`}
+                                >
+                                    {page.name}
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </li>
+
           </ul>
         </nav>
 

@@ -1,5 +1,4 @@
 
-
 import { Property, PropertyStatus } from './types';
 
 export const navLinks = [
@@ -45,19 +44,19 @@ const generateProperties = (startId: number, count: number): Property[] => {
             daysAgo: Math.floor(Math.random() * 30) + 1,
             isPremium: Math.random() > 0.7,
             propertyType: 'House',
-            name: i === 0 && startId === 1 ? 'Lakeside Estate' : 'Modern Family Home',
-            beds: i === 0 && startId === 1 ? 3 : Math.floor(Math.random() * 3) + 2,
-            baths: i === 0 && startId === 1 ? 4 : Math.floor(Math.random() * 3) + 2,
-            garage: i === 0 && startId === 1 ? 2 : Math.floor(Math.random() * 2) + 1,
-            areaSqm: i === 0 && startId === 1 ? 350 : Math.floor(Math.random() * 300) + 100,
-            priceGHS: i === 0 && startId === 1 ? 1830055 : Math.floor(Math.random() * 2000000) + 500000,
-            priceUSD: i === 0 && startId === 1 ? 150000 : Math.floor(Math.random() * 150000) + 40000,
+            name: i === 0 && startId === 10 ? 'Lakeside Estate' : 'Modern Family Home',
+            beds: i === 0 && startId === 10 ? 3 : Math.floor(Math.random() * 3) + 2,
+            baths: i === 0 && startId === 10 ? 4 : Math.floor(Math.random() * 3) + 2,
+            garage: i === 0 && startId === 10 ? 2 : Math.floor(Math.random() * 2) + 1,
+            areaSqm: i === 0 && startId === 10 ? 350 : Math.floor(Math.random() * 300) + 100,
+            priceGHS: i === 0 && startId === 10 ? 1830055 : Math.floor(Math.random() * 2000000) + 500000,
+            priceUSD: i === 0 && startId === 10 ? 150000 : Math.floor(Math.random() * 150000) + 40000,
         });
     }
     // Ensure the first property matches the design reference exactly
-    if (startId === 1) {
+    if (startId === 10) {
         properties[0] = {
-            id: 1,
+            id: 10,
             images: [newImageUrl],
             status: PropertyStatus.ForSale,
             daysAgo: 15,
@@ -76,9 +75,9 @@ const generateProperties = (startId: number, count: number): Property[] => {
 }
 
 
-export const featuredProperties: Property[] = generateProperties(1, 6).map(p => ({ ...p, isPremium: true }));
-export const latestProperties: Property[] = generateProperties(7, 6);
-export const allPropertiesList: Property[] = generateProperties(13, 12); // Generate 12 properties for the listing page
+export const featuredProperties: Property[] = generateProperties(10, 6).map(p => ({ ...p, isPremium: true }));
+export const latestProperties: Property[] = generateProperties(16, 6);
+export const allPropertiesList: Property[] = generateProperties(22, 12); // Generate 12 properties for the listing page
 
 
 export const footerLinks = {
