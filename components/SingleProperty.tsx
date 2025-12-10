@@ -153,8 +153,8 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
             const x = (mainImg.width - logoWidth) / 2;
             const y = (mainImg.height - logoHeight) / 2;
 
-            // 3. Draw Logo with Opacity (45%)
-            ctx.globalAlpha = 0.45; // 45% Opacity
+            // 3. Draw Logo with Opacity (50%)
+            ctx.globalAlpha = 0.50; // 50% Opacity
             ctx.drawImage(logoImg, x, y, logoWidth, logoHeight);
             ctx.globalAlpha = 1.0; // Reset opacity
 
