@@ -114,6 +114,14 @@ const App: React.FC = () => {
     
     // Admin CMS Edit Routes
     if (currentPage.startsWith('admin-edit-')) {
+        // Check extra permission for Editors
+        if (userRole === 'editor') {
+            const cmsAccess = localStorage.getItem('editorCMSAccess') !== 'false';
+            if (!cmsAccess) {
+                return <AccessDeniedPage onNavigate={handleNavigate} />;
+            }
+        }
+        
         const pageName = currentPage.replace('admin-edit-', '');
         return renderRestricted(<AdminPageEditor pageName={pageName} onNavigate={handleNavigate} userRole={userRole} />, ['admin', 'editor']);
     }

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -12,6 +12,18 @@ interface AdminLayoutProps {
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children, onNavigate, activePage, title, userRole }) => {
   const isAdmin = userRole === 'admin';
   const [isCMSOpen, setIsCMSOpen] = useState(activePage.startsWith('admin-edit-'));
+  
+  // State for CMS Access Permission
+  const [cmsAccessAllowed, setCmsAccessAllowed] = useState(() => {
+      // Default to allowed if not set
+      return localStorage.getItem('editorCMSAccess') !== 'false';
+  });
+
+  const handleToggleCMSAccess = () => {
+      const newValue = !cmsAccessAllowed;
+      setCmsAccessAllowed(newValue);
+      localStorage.setItem('editorCMSAccess', String(newValue));
+  };
 
   // Base items available to both
   const commonItems = [
@@ -57,6 +69,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, onNavigate, activeP
       menuItems.push({ name: 'Create Admin', page: 'admin-register', icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /> });
   }
 
+  // Only show CMS menu if Admin or if Editor has permission
+  const showCMSMenu = isAdmin || cmsAccessAllowed;
+
   return (
     <div className="flex h-screen bg-gray-100 font-sans">
       {/* Sidebar */}
@@ -87,41 +102,64 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, onNavigate, activeP
               </li>
             ))}
 
-            {/* CMS Section */}
-            <li>
-                <button 
-                    onClick={() => setIsCMSOpen(!isCMSOpen)}
-                    className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
-                >
-                    <div className="flex items-center gap-3">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
-                        Main Pages (CMS)
-                    </div>
-                    <svg className={`w-4 h-4 transition-transform ${isCMSOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
-                
-                {isCMSOpen && (
-                    <ul className="pl-11 pr-2 space-y-1 mt-1">
-                        {cmsPages.map(page => (
-                            <li key={page.id}>
-                                <button
-                                    onClick={() => onNavigate(`admin-edit-${page.id}`)}
-                                    className={`w-full text-left py-2 px-2 rounded-md text-xs font-medium transition-colors ${
-                                        activePage === `admin-edit-${page.id}`
-                                            ? 'text-[#F9A826] bg-white/10'
-                                            : 'text-gray-400 hover:text-white hover:bg-white/5'
-                                    }`}
-                                >
-                                    {page.name}
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                )}
-            </li>
+            {/* CMS Section - Conditionally Rendered */}
+            {showCMSMenu && (
+                <li>
+                    <button 
+                        onClick={() => setIsCMSOpen(!isCMSOpen)}
+                        className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
+                    >
+                        <div className="flex items-center gap-3">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                            Main Pages (CMS)
+                        </div>
+                        <svg className={`w-4 h-4 transition-transform ${isCMSOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    
+                    {isCMSOpen && (
+                        <ul className="pl-11 pr-2 space-y-1 mt-1">
+                            {cmsPages.map(page => (
+                                <li key={page.id}>
+                                    <button
+                                        onClick={() => onNavigate(`admin-edit-${page.id}`)}
+                                        className={`w-full text-left py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                                            activePage === `admin-edit-${page.id}`
+                                                ? 'text-[#F9A826] bg-white/10'
+                                                : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                        }`}
+                                    >
+                                        {page.name}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </li>
+            )}
 
           </ul>
         </nav>
+
+        {/* Admin CMS Permission Toggle */}
+        {isAdmin && (
+            <div className="mx-4 mb-2 p-3 bg-blue-900/30 rounded-lg border border-blue-800/50">
+                <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-gray-300 uppercase tracking-wide">Allow Editor CMS</span>
+                    <button 
+                        onClick={handleToggleCMSAccess}
+                        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none ${cmsAccessAllowed ? 'bg-[#F9A826]' : 'bg-gray-600'}`}
+                    >
+                        <span className="sr-only">Toggle CMS Access</span>
+                        <span 
+                            className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${cmsAccessAllowed ? 'translate-x-5' : 'translate-x-1'}`} 
+                        />
+                    </button>
+                </div>
+                <p className="text-[10px] text-gray-400 mt-1">
+                    {cmsAccessAllowed ? 'Editors can access CMS.' : 'Editors restricted from CMS.'}
+                </p>
+            </div>
+        )}
 
         <div className="p-4 border-t border-gray-700">
           <button 
