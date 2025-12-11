@@ -1,6 +1,8 @@
+
 export enum PropertyStatus {
   ForSale = 'For Sale',
   ForRent = 'For Rent',
+  Sold = 'Sold',
   Land = 'Land',
 }
 

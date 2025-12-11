@@ -36,11 +36,16 @@ const generateProperties = (startId: number, count: number): Property[] => {
     const properties: Property[] = [];
     const newImageUrl = 'https://i.ibb.co/NnZzSLFd/Sample-Card-Image.jpg';
     for (let i = 0; i < count; i++) {
-        const isForSale = Math.random() > 0.5;
+        // Randomize status including Sold
+        const rand = Math.random();
+        let status = PropertyStatus.ForSale;
+        if (rand > 0.6) status = PropertyStatus.ForRent;
+        if (rand > 0.9) status = PropertyStatus.Sold;
+
         properties.push({
             id: startId + i,
             images: [newImageUrl],
-            status: isForSale ? PropertyStatus.ForSale : PropertyStatus.ForRent,
+            status: status,
             daysAgo: Math.floor(Math.random() * 30) + 1,
             isPremium: Math.random() > 0.7,
             propertyType: 'House',

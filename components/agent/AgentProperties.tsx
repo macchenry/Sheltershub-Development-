@@ -12,7 +12,7 @@ const AgentProperties: React.FC<AgentPropertiesProps> = ({ onNavigate }) => {
         id: 101,
         title: "Modern Family Home",
         location: "Cantonments, Accra",
-        status: "Active",
+        status: "For Sale",
         price: "$450,000",
         type: "House",
         views: 1240,
@@ -22,7 +22,7 @@ const AgentProperties: React.FC<AgentPropertiesProps> = ({ onNavigate }) => {
         id: 102,
         title: "Luxury Apartment",
         location: "Osu, Accra",
-        status: "Pending",
+        status: "For Rent",
         price: "$2,500 / mo",
         type: "Apartment",
         views: 856,
@@ -32,7 +32,7 @@ const AgentProperties: React.FC<AgentPropertiesProps> = ({ onNavigate }) => {
         id: 103,
         title: "Commercial Space",
         location: "Airport City",
-        status: "Archived",
+        status: "For Rent",
         price: "$5,000 / mo",
         type: "Commercial",
         views: 450,
@@ -60,16 +60,16 @@ const AgentProperties: React.FC<AgentPropertiesProps> = ({ onNavigate }) => {
               <h3 className="text-3xl font-bold text-[#0A2B4C]">12</h3>
           </div>
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <p className="text-sm text-gray-500 font-medium">Active</p>
+              <p className="text-sm text-gray-500 font-medium">For Sale</p>
               <h3 className="text-3xl font-bold text-green-600">8</h3>
           </div>
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <p className="text-sm text-gray-500 font-medium">Pending</p>
-              <h3 className="text-3xl font-bold text-yellow-600">2</h3>
+              <p className="text-sm text-gray-500 font-medium">For Rent</p>
+              <h3 className="text-3xl font-bold text-blue-600">2</h3>
           </div>
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
               <p className="text-sm text-gray-500 font-medium">Sold</p>
-              <h3 className="text-3xl font-bold text-blue-600">45</h3>
+              <h3 className="text-3xl font-bold text-red-600">45</h3>
           </div>
       </div>
 
@@ -94,9 +94,9 @@ const AgentProperties: React.FC<AgentPropertiesProps> = ({ onNavigate }) => {
                       <img src={property.image} alt={property.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                       <div className="absolute top-3 right-3">
                           <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase shadow-sm ${
-                              property.status === 'Active' ? 'bg-green-100 text-green-700' : 
-                              property.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' : 
-                              property.status === 'Sold' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'
+                              property.status === 'For Sale' ? 'bg-[#0A2B4C] text-white' : 
+                              property.status === 'For Rent' ? 'bg-[#2563EB] text-white' : 
+                              property.status === 'Sold' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700'
                           }`}>
                               {property.status}
                           </span>

@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Property } from '../types';
+import { Property, PropertyStatus } from '../types';
 import { BedIcon, BathIcon, GarageIcon, HeartIcon } from './icons/PropertyIcons';
 
 interface PropertyCardProps {
@@ -18,14 +18,32 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick }) => {
     if (onClick) onClick();
   };
 
+  const getStatusColor = (status: string) => {
+      switch (status) {
+          case PropertyStatus.ForSale:
+              return 'bg-[#0A2B4C] text-white'; // Brand Blue
+          case PropertyStatus.ForRent:
+              return 'bg-[#2563EB] text-white'; // Brighter Blue/Royal
+          case PropertyStatus.Sold:
+              return 'bg-red-600 text-white'; // Red
+          default:
+              return 'bg-gray-100 text-gray-800';
+      }
+  };
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden group transition-shadow duration-300 shadow-sm hover:shadow-lg flex flex-col h-full">
       <div className="relative cursor-pointer" onClick={handleCardClick}>
         <img src={property.images[currentImageIndex]} alt={property.name} className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105" />
 
         <div className="absolute top-4 left-4 flex items-center gap-2">
-          <span className="bg-white text-gray-900 text-xs font-semibold px-3 py-1.5 rounded-md shadow uppercase tracking-wide">{property.status}</span>
-          <span className="bg-white text-gray-900 text-xs font-semibold px-3 py-1.5 rounded-md shadow">{property.daysAgo} Days Ago</span>
+          <span className={`${getStatusColor(property.status)} text-xs font-bold px-3 py-1.5 rounded-md shadow uppercase tracking-wide`}>
+            {property.status}
+          </span>
+          {/* Only show 'Days Ago' if not Sold */}
+          {property.status !== PropertyStatus.Sold && (
+             <span className="bg-white text-gray-900 text-xs font-semibold px-3 py-1.5 rounded-md shadow">{property.daysAgo} Days Ago</span>
+          )}
         </div>
 
         <button 

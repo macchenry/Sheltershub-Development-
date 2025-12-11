@@ -60,6 +60,15 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
     return `SH-${id.toString().padStart(3, '0')}`;
   };
 
+  const getStatusColor = (status: string) => {
+      switch (status) {
+          case 'For Sale': return 'bg-[#0A2B4C] text-white';
+          case 'For Rent': return 'bg-[#2563EB] text-white';
+          case 'Sold': return 'bg-red-600 text-white';
+          default: return 'bg-gray-100 text-gray-800';
+      }
+  };
+
   // Mock Data for the selected property
   const property = {
     id: propertyId || 10,
@@ -75,6 +84,7 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
     city: "Accra",
     neighborhood: "Cantonments",
     status: "For Sale",
+    isPremium: true,
     bedrooms: 5,
     bathrooms: 4,
     garage: 3,
@@ -241,8 +251,11 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
             <div className="space-y-2">
                 <div className="flex items-center gap-3">
-                    <span className="bg-[#F9A826] text-white text-xs font-bold px-2.5 py-1 rounded uppercase tracking-wide">{property.status}</span>
+                    <span className={`${getStatusColor(property.status)} text-xs font-bold px-2.5 py-1 rounded uppercase tracking-wide`}>{property.status}</span>
                     <span className="text-gray-500 text-sm">ID: {formatPropertyId(property.id)}</span>
+                    {property.isPremium && (
+                        <span className="bg-[#F9A826] text-white text-xs font-bold px-2.5 py-1 rounded uppercase tracking-wide">Featured</span>
+                    )}
                 </div>
                 <h1 className="text-2xl md:text-3xl font-bold text-[#0A2B4C] leading-tight">{property.title}</h1>
                 <div className="flex items-center text-gray-600 text-sm md:text-base">
@@ -404,7 +417,7 @@ const SingleProperty: React.FC<SinglePropertyProps> = ({ onNavigate, propertyId 
                         {property.description}
                     </p>
 
-                    <h4 className="text-lg font-bold text-[#0A2B4C] mt-8 mb-4">Features & Amenities</h4>
+                    <h4 className="text-lg font-bold text-[#0A2B4C] mt-8 mb-4">Features</h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-3 gap-x-4">
                         {property.features.map((feature, idx) => (
                             <div key={idx} className="flex items-center text-gray-600 text-sm">
